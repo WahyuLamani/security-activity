@@ -7,24 +7,24 @@ const storage = require('node-sessionstorage')
 
 app.get('/', (req, res) => {
     let rq = req.query;
-    if(storage.getItem(rq.titik) == "undefined") {
+    storage.setItem('request', rq.titik);
+    if(storage.getItem(rq.titik) == undefined) {
         let data = {
             IP : req.socket.remoteAddress,
             Lokasi : rq.titik,
             Tanggal : moment().format('DD:mm:yyyy hh:mm:ss')
         }
-        console.log(storage.setItem(rq.titik,data));
         res.sendFile(__dirname + '/index.html')
+        console.log(storage.setItem(rq.titik,data));
     }else {
-        res.send('UDAH SUBMIT')
+        res.send('<h1>SCAN ULANG BARCODE, HANYA BOLEH SATU KALI SUBMIT!!</h1>')
     }
 })
 
 app.get('/petugas', (req,res) => {
-    let a = storage.getItem
+    let strg = storage.getItem('request');
     try{
-        
-        let store = storage.getItem();
+        let store = storage.getItem(strg);
         let data = {
             IP : store.IP,
             Lokasi : store.Lokasi,
@@ -32,10 +32,13 @@ app.get('/petugas', (req,res) => {
             Petugas : req.query.petugas
         }
         console.log(data);
-        storage.removeItem(rq.titik)
+        // simpan data dibawah sini
+
+        // end
+        storage.removeItem(strg)
         res.send("<h1> OK !! </h1>")
     } catch(err) {
-        console.log(err);
+        // storage.removeItem(strg)
         res.send("<h1>SCAN ULANG BARCODE, HANYA BOLEH SATU KALI SUBMIT!!</h1>")
     }
 })
