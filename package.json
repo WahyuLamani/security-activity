@@ -11,8 +11,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "moment": "^2.29.4",
+    "mongodb": "^4.1.4",
     "node-sessionstorage": "^1.0.0"
   }
 }
