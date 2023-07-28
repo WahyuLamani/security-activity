@@ -6,28 +6,24 @@ const storage = require("node-sessionstorage");
 const { client } = require("./lib/mongo");
 require("dotenv").config();
 
+const datetime = moment().format("DDMMYYYY");
+
 async function store(data) {
-  const unique = moment().format("DDMMYYYY");
-  //   const unique = "112232";
-  client.connect((err, res) => {
-    if (err) {
-      console.log(err);
-    }
-    const db = client.db(process.env.DB_NAME);
-    db.collection(unique).insertOne(
-      {
-        lokasi: "tes",
-        petugas: "tes",
-        tanggal: "test",
-      },
-      (error, result) => {
-        if (error) {
-          console.log(error);
-        }
-        console.log(result);
+  const db = client.db(process.env.DB_NAME);
+  db.collection(datetime).insertOne(
+    {
+      lokasi: data.Lokasi,
+      petugas: data.Petugas,
+      tanggal: data.Tanggal,
+    },
+    (error, result) => {
+      if (error) {
+        console.log(error);
       }
-    );
-  });
+      console.log(result);
+      return "oke";
+    }
+  );
 }
 
 app.get("/tes", (req, res) => {
@@ -39,46 +35,34 @@ app.get("/", (req, res) => {
   if (rq.titik == undefined) {
     res.send("<h1>SCAN QRCODE!!</h1>");
   }
-  storage.setItem("loct", rq.titik);
-
-  if (storage.getItem("loct") != rq.titik) {
-    let data = {
-      IP: req.socket.remoteAddress,
-      Lokasi: rq.titik,
-      Tanggal: moment().format("DD:mm:yyyy hh:mm:ss"),
-    };
-    res.sendFile(__dirname + "/index.html");
-    // console.log(storage.setItem(rq.titik, data));
-  }
+  console.log(storage.getItem(datetime) + "root");
+  storage.setItem(datetime, rq.titik);
+  res.sendFile(__dirname + "/index.html");
 });
 
-app.post("/petugas", (req, res) => {
-  let strg = storage.getItem(store());
-  try {
-    let store = storage.getItem(strg);
-    let data = {
-      Lokasi: store.Lokasi,
-      Tanggal: store.Tanggal,
-      Petugas: req.query.petugas,
-    };
-    console.log(data);
-    // simpan data dibawah sini
-
-    // end
-    // storage.removeItem(strg);
-    res.send("<h1> OK !! </h1>");
-  } catch (err) {
-    // storage.removeItem(strg)
-    console.log(err);
-    res.send("<h1>SCAN ULANG QRCODE, HANYA BOLEH SATU KALI SUBMIT!!</h1>");
-  }
+app.get("/petugas", (req, res) => {
+  return console.log(req);
+  let data = {
+    Lokasi: storage.getItem(datetime),
+    Tanggal: moment().format("DD:mm:yyyy hh:mm:ss"),
+    Petugas: req.query.petugas,
+  };
+  store(data);
+  res.sendFile("<h1> Berhasil! </h1>");
 });
 
 app.get("/clear", (req, res) => {
-  let strg = storage.getItem(store());
-  storage.removeItem(strg);
+  storage.removeItem(datetime);
+  console.log(storage.getItem(datetime) + " clear");
+  res.send("<h1> Berhasil Di delete </h1>");
 });
 
 app.listen(port, () => {
+  client.connect((err, res) => {
+    if (err) {
+      return console.log(err);
+    }
+    console.log("berhasil koneksi ke database");
+  });
   console.log(`Example app listening on port ${port}`);
 });
