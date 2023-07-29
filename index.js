@@ -65,11 +65,5 @@ app.post("/petugas", (req, res) => {
 });
 
 app.listen(port, () => {
-  client.connect((err, res) => {
-    if (err) {
-      return console.log(err);
-    }
-    console.log("berhasil koneksi ke database");
-  });
   console.log(`Example app listening on port ${port}`);
 });
