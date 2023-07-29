@@ -46,7 +46,7 @@ app.get("/", (req, res) => {
   if (urlCheck(req.query.titik) == undefined) {
     return res.send("<h1>SCAN QRCODE!!</h1>");
   }
-  res.sendFile(__dirname + "/index.html");
+  res.sendFile(__dirname + "/_index.html");
 });
 
 app.post("/petugas", (req, res) => {
