@@ -2,7 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const port = 8989;
-const moment = require("moment");
+const moment = require("moment-timezone");
+moment.tz.setDefault("Asia/Makassar");
 const { client } = require("./lib/mongo");
 require("dotenv").config();
 
