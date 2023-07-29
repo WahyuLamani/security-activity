@@ -40,14 +40,29 @@
     <script>
         const url = window.location.search
         const result = url.match(/=(.+)/)
-        const akhir = result[1]
-        localStorage.setItem('input', result[1])
+        // make format 
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        let mm = today.getMonth() + 1; // Months start at 0!
+        let dd = today.getDate();
 
+        if (dd < 10) dd = '0' + dd;
+        if (mm < 10) mm = '0' + mm;
+
+        const dateNow = dd + '' + mm + '' + yyyy;
+
+        console.log(dateNow);
+        
         const formElement = document.getElementById('form');
         formElement.addEventListener('submit', function(event) {
             event.preventDefault();
             formElement.elements.url.value = result[1]
+            if (result[1] === localStorage.getItem(dateNow)) {
+                alert('GAGAL MENYIMPAN DATA, PASTIKAN SCAN CODEQR TERLEBIH DAHULU')
+                return window.location.replace('/');
+            }
             formElement.submit();
+            localStorage.setItem(dateNow, result[1])
         });
     </script>
 
