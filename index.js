@@ -58,7 +58,7 @@ app.post("/petugas", (req, res) => {
 
   let data = {
     Lokasi: lokasi,
-    Tanggal: moment().format("DD:mm:yyyy hh:mm:ss"),
+    Tanggal: moment().format("DD:mm:yyyy HH:mm:ss"),
     Petugas: req.body.petugas,
   };
   store(data);
