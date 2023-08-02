@@ -10,9 +10,6 @@ require("dotenv").config();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-const datetime = moment().format("DDMMYYYY");
-const db = client.db(process.env.DB_NAME);
-
 const urlCheck = (titik) => {
   if (titik == process.env.LT1) {
     return "lt1";
@@ -22,12 +19,17 @@ const urlCheck = (titik) => {
   }
   if (titik == process.env.LT3) {
     return "lt3";
+  }
+  if (titik == process.env.LT4) {
+    return "lt4";
   } else {
     return undefined;
   }
 };
 
 async function store(data) {
+  const db = client.db(process.env.DB_NAME);
+  const datetime = moment().format("DDMMYYYY");
   db.collection(datetime).insertOne(
     {
       lokasi: data.Lokasi,
@@ -58,7 +60,7 @@ app.post("/petugas", (req, res) => {
 
   let data = {
     Lokasi: lokasi,
-    Tanggal: moment().format("DD:mm:yyyy HH:mm:ss"),
+    Tanggal: moment().format("DD:MM:yyyy HH:mm:ss"),
     Petugas: req.body.petugas,
   };
   store(data);
